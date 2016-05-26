@@ -61,15 +61,16 @@ print "----------------------"
 print "   Start training...  "
 print "----------------------"
 
-batch_size = 20 # Tamano del bloque. Introduciremos de 20 en 20.
+# Tamano de las muestras
+batch_size = 20 
 
-vector = [] # Guardaremos las salidas para mostrarlo en la grafica.
+vector = [] 
 for step in xrange(1000):
     for jj in xrange(len(x_data) / batch_size):
         batch_xs = x_data[jj * batch_size: jj * batch_size + batch_size]
         batch_ys = y_data[jj * batch_size: jj * batch_size + batch_size]
 
-        sess.run(train, feed_dict={x: batch_xs, y_: batch_ys}) # Diccionario para alimentar el placeholder.
+        sess.run(train, feed_dict={x: batch_xs, y_: batch_ys})
         if step % 50 == 0:
 
             e = sess.run(cross_entropy, feed_dict={x: batch_xs, y_: batch_ys})

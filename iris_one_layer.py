@@ -46,9 +46,8 @@ bi = tf.Variable(np.float32(np.random.rand(3)) * 0.1)
 
 yi = tf.nn.softmax((tf.matmul(y, Wi) + bi))
 
-#cross_entropy = -tf.reduce_sum(y_ * tf.log(yi))
 #Hacemos la resta para ver lo que se acerca a lo esperado
-cross_entropy = tf.reduce_sum(tf.squared(y_ - yi))
+cross_entropy = tf.reduce_sum(tf.square(y_ - yi))
 
 #Descenso por el gradiente para buscar el minimo.
 train = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)

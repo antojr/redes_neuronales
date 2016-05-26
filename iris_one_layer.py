@@ -13,11 +13,11 @@ def one_hot(x, n):
     o_h[np.arange(len(x)), x] = 1
     return o_h
 
-
-data = np.genfromtxt('iris.data', delimiter=",") # fichero iris.data
+# fichero iris.data
+data = np.genfromtxt('iris.data', delimiter=",")
 np.random.shuffle(data)
-x_data = data[:, 0:4].astype('f4') # Datos. col 0,1,2,3
-y_data = one_hot(data[:, 4].astype(int), 3) # Clase. col 4
+x_data = data[:, 0:4].astype('f4') 
+y_data = one_hot(data[:, 4].astype(int), 3)
 
 print y_data
 
@@ -26,15 +26,11 @@ for i in range(20):
     print x_data[i], " -> ", y_data[i]
 print
 
-# Canal en la gpu donde entran/salen los datos.
-# Canal de diametro 4 y longitud no se sabe. (4 propiedades flor iris, longitud num. elementos que introduciremos).
-x = tf.placeholder("float", [None, 4]) # Entrada de datos gpu
-y_ = tf.placeholder("float", [None, 3]) # Salida de datos gpu
+#Datos de entrada
+x = tf.placeholder("float", [None, 4])
+#Datos esperados
+y_ = tf.placeholder("float", [None, 3]) 
 
-# ---------
-
-# W = tf.Variable(np.float32(np.random.rand(4, 3))*0.1)
-# b = tf.Variable(np.float32(np.random.rand(3))*0.1)
 
 # Primera capa, 5 neuronas 4 entradas
 W = tf.Variable(np.float32(np.random.rand(4, 5)) * 0.1) 
@@ -43,17 +39,19 @@ b = tf.Variable(np.float32(np.random.rand(5)) * 0.1)
 # Salida.
 y = tf.sigmoid((tf.matmul(x, W) + b))
 
-# ---------
 
 # Segunda capa, 3 neuronas 5 entradas
 Wi = tf.Variable(np.float32(np.random.rand(5, 3)) * 0.1)
 bi = tf.Variable(np.float32(np.random.rand(3)) * 0.1)
 
-yi = tf.nn.softmax((tf.matmul(y, Wi) + bi)) 
+yi = tf.nn.softmax((tf.matmul(y, Wi) + bi))
 
-cross_entropy = -tf.reduce_sum(y_ * tf.log(yi))  # Reducimos la dimension reduce_sum() a 1 elemento.
+#cross_entropy = -tf.reduce_sum(y_ * tf.log(yi))
+#Hacemos la resta para ver lo que se acerca a lo esperado
+cross_entropy = tf.reduce_sum(tf.squared(y_ - yi))
 
-train = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy) # Descenso por el gradiente para buscar el minimo.
+#Descenso por el gradiente para buscar el minimo.
+train = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
 
 init = tf.initialize_all_variables()
 
